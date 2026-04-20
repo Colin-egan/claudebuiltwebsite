@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Colin T. Egan — Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            navy: '#1B2A4A',
+            gold: '#C5A55A',
+            offwhite: '#F8F7F4',
+            charcoal: '#2D2D2D',
+            slate: '#6B7B8D',
+            teal: '#3A7D7B',
+          },
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+        },
+      },
+    }
+  </script>
+  <style>
+    /* SVG noise texture for depth */
+    .noise-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background-color: #F8F7F4;
+      color: #2D2D2D;
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Nav */
+    .nav-link {
+      color: #6B7B8D;
+      font-size: 0.875rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      transition: color 0.2s ease;
+      position: relative;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: #C5A55A;
+      transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .nav-link:hover { color: #1B2A4A; }
+    .nav-link:hover::after { width: 100%; }
+
+    /* Hero gradient */
+    .hero-bg {
+      background-color: #1B2A4A;
+      background-image:
+        radial-gradient(ellipse 70% 60% at 80% 20%, rgba(197,165,90,0.12) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 80% at 10% 80%, rgba(58,125,123,0.1) 0%, transparent 55%),
+        radial-gradient(ellipse 40% 40% at 50% 50%, rgba(27,42,74,0.8) 0%, transparent 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+
+    /* Gold divider */
+    .gold-rule {
+      height: 1px;
+      background: #C5A55A;
+      opacity: 0.4;
+    }
+
+    /* Cards */
+    .card {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow:
+        0 1px 2px rgba(27,42,74,0.04),
+        0 4px 12px rgba(27,42,74,0.07),
+        0 12px 28px rgba(27,42,74,0.05);
+      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease;
+    }
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow:
+        0 2px 4px rgba(27,42,74,0.05),
+        0 8px 20px rgba(27,42,74,0.1),
+        0 20px 40px rgba(27,42,74,0.08);
+    }
+
+    /* Skill tags */
+    .skill-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 4px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+    }
+    .skill-tag:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(58,125,123,0.2);
+    }
+
+    /* Timeline connector */
+    .timeline-line {
+      position: absolute;
+      left: 11px;
+      top: 28px;
+      bottom: 0;
+      width: 1px;
+      background: linear-gradient(to bottom, #C5A55A, transparent);
+    }
+    .timeline-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #C5A55A;
+      flex-shrink: 0;
+      box-shadow: 0 0 0 3px rgba(197,165,90,0.2);
+      margin-top: 5px;
+    }
+
+    /* Section heading accent */
+    .section-heading {
+      font-size: 1.875rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: #1B2A4A;
+      line-height: 1.15;
+    }
+    .section-heading span {
+      color: #C5A55A;
+    }
+
+    /* CTA button */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #C5A55A;
+      color: #1B2A4A;
+      font-weight: 600;
+      font-size: 0.9rem;
+      letter-spacing: 0.02em;
+      padding: 12px 28px;
+      border-radius: 4px;
+      transition: background 0.2s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+    }
+    .btn-primary:hover {
+      background: #d4b56a;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(197,165,90,0.35);
+    }
+    .btn-primary:active { transform: translateY(0); }
+    .btn-primary:focus-visible { outline: 2px solid #C5A55A; outline-offset: 3px; }
+
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1.5px solid rgba(197,165,90,0.5);
+      color: rgba(248,247,244,0.85);
+      font-weight: 500;
+      font-size: 0.9rem;
+      letter-spacing: 0.02em;
+      padding: 11px 26px;
+      border-radius: 4px;
+      transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+    }
+    .btn-outline:hover {
+      border-color: #C5A55A;
+      color: #C5A55A;
+      background: rgba(197,165,90,0.05);
+    }
+    .btn-outline:focus-visible { outline: 2px solid #C5A55A; outline-offset: 3px; }
+
+    /* Stat numbers */
+    .stat-number {
+      font-size: 2.25rem;
+      font-weight: 700;
+      color: #C5A55A;
+      letter-spacing: -0.04em;
+      line-height: 1;
+    }
+
+    /* Contact link */
+    .contact-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #2D2D2D;
+      padding: 14px 20px;
+      border-radius: 8px;
+      background: #fff;
+      border: 1px solid rgba(27,42,74,0.08);
+      box-shadow: 0 1px 3px rgba(27,42,74,0.05);
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .contact-link:hover {
+      border-color: #C5A55A;
+      box-shadow: 0 4px 16px rgba(197,165,90,0.15);
+      transform: translateY(-2px);
+    }
+    .contact-link:focus-visible { outline: 2px solid #C5A55A; outline-offset: 3px; }
+
+    /* Scroll fade-in */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.55s ease, transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body class="min-h-screen">
+
+  <!-- ═══════════════════════════════════════════
+       NAV
+  ════════════════════════════════════════════════ -->
+  <nav id="nav" style="position:fixed;top:0;left:0;right:0;z-index:50;background:rgba(248,247,244,0.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid rgba(27,42,74,0.06);transition:box-shadow 0.3s ease;">
+    <div style="max-width:1100px;margin:0 auto;padding:0 24px;height:64px;display:flex;align-items:center;justify-content:space-between;">
+      <a href="#hero" style="display:flex;align-items:center;gap:12px;text-decoration:none;">
+        <img src="Brand_assets/Colin Egan Personal Logo.png" alt="CTE Logo" style="height:36px;width:auto;" />
+      </a>
+      <div style="display:flex;gap:32px;align-items:center;">
+        <a href="#about" class="nav-link">About</a>
+        <a href="#experience" class="nav-link">Experience</a>
+        <a href="#skills" class="nav-link">Skills</a>
+        <a href="#contact" class="nav-link">Contact</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ═══════════════════════════════════════════
+       HERO
+  ════════════════════════════════════════════════ -->
+  <section id="hero" class="hero-bg" style="padding-top:64px;min-height:100vh;display:flex;align-items:center;position:relative;">
+    <div style="max-width:1100px;margin:0 auto;padding:80px 24px;position:relative;z-index:2;width:100%;">
+      <div style="display:grid;grid-template-columns:1fr auto;gap:64px;align-items:center;">
+
+        <!-- Left: text -->
+        <div>
+          <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(197,165,90,0.12);border:1px solid rgba(197,165,90,0.25);border-radius:4px;padding:6px 14px;margin-bottom:28px;">
+            <span style="width:6px;height:6px;border-radius:50%;background:#C5A55A;display:inline-block;"></span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:500;color:#C5A55A;letter-spacing:0.1em;text-transform:uppercase;">Available for Internships · Summer 2026</span>
+          </div>
+
+          <h1 style="font-size:clamp(2.8rem,6vw,4.5rem);font-weight:700;letter-spacing:-0.04em;color:#F8F7F4;line-height:1.05;margin-bottom:16px;">
+            Colin T.<br/>
+            <span style="color:#C5A55A;">Egan</span>
+          </h1>
+
+          <p style="font-size:1.2rem;font-weight:500;color:rgba(248,247,244,0.7);letter-spacing:0.01em;margin-bottom:12px;">
+            Business &amp; Economics — UNC Kenan-Flagler
+          </p>
+
+          <p style="font-size:1rem;color:rgba(248,247,244,0.5);max-width:500px;line-height:1.7;margin-bottom:40px;">
+            Quantitative Rigor. Strategic Clarity. — Bridging econometric depth with hands-on consulting, financial modeling, and cross-functional leadership.
+          </p>
+
+          <div style="display:flex;gap:14px;flex-wrap:wrap;">
+            <a href="#experience" class="btn-primary">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+              View Experience
+            </a>
+            <a href="Brand_assets/Colin Egan Resume. APR 1.pdf" target="_blank" class="btn-outline">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10,9 9,9 8,9"/></svg>
+              Download Resume
+            </a>
+          </div>
+        </div>
+
+        <!-- Right: stat card -->
+        <div style="display:flex;flex-direction:column;gap:16px;">
+          <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(197,165,90,0.2);border-radius:8px;padding:28px 32px;min-width:200px;">
+            <div class="stat-number">3.479</div>
+            <div style="font-size:0.8rem;color:rgba(248,247,244,0.5);margin-top:6px;letter-spacing:0.04em;text-transform:uppercase;">GPA</div>
+          </div>
+          <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(197,165,90,0.2);border-radius:8px;padding:28px 32px;">
+            <div class="stat-number">2×</div>
+            <div style="font-size:0.8rem;color:rgba(248,247,244,0.5);margin-top:6px;letter-spacing:0.04em;text-transform:uppercase;">Dean's List</div>
+          </div>
+          <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(197,165,90,0.2);border-radius:8px;padding:28px 32px;">
+            <div class="stat-number">14%</div>
+            <div style="font-size:0.8rem;color:rgba(248,247,244,0.5);margin-top:6px;letter-spacing:0.04em;text-transform:uppercase;">YoY Revenue Growth Led</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Scroll cue -->
+    <div style="position:absolute;bottom:36px;left:50%;transform:translateX(-50%);z-index:2;display:flex;flex-direction:column;align-items:center;gap:8px;opacity:0.4;">
+      <span style="font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:#F8F7F4;">Scroll</span>
+      <svg width="16" height="20" viewBox="0 0 16 20" fill="none"><rect x="6" y="0" width="4" height="10" rx="2" fill="#F8F7F4"/><path d="M2 14l6 6 6-6" stroke="#F8F7F4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+       ABOUT / EDUCATION
+  ════════════════════════════════════════════════ -->
+  <section id="about" style="padding:100px 24px;max-width:1100px;margin:0 auto;">
+    <div class="fade-up" style="display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start;">
+
+      <!-- Left: bio -->
+      <div>
+        <p style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:#C5A55A;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:12px;">About</p>
+        <h2 class="section-heading" style="margin-bottom:24px;">Analytical by training.<br/><span>Strategic</span> by instinct.</h2>
+        <div class="gold-rule" style="margin-bottom:24px;"></div>
+        <p style="font-size:1rem;line-height:1.8;color:#2D2D2D;margin-bottom:16px;">
+          I'm a rising junior at UNC Kenan-Flagler pursuing a B.S. in Business Administration &amp; Economics with a minor in Philosophy, Politics, and Economics. My work sits at the intersection of quantitative analysis and strategic execution.
+        </p>
+        <p style="font-size:1rem;line-height:1.8;color:#6B7B8D;">
+          From econometric modeling in R and STATA to building DCF models and leading cross-functional teams, I bring both the analytical toolkit and the communication skills to translate data into decisions.
+        </p>
+      </div>
+
+      <!-- Right: education card -->
+      <div>
+        <p style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:#C5A55A;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:12px;">Education</p>
+        <div class="card" style="padding:32px;">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;">
+            <div>
+              <h3 style="font-size:1.15rem;font-weight:700;color:#1B2A4A;letter-spacing:-0.02em;margin-bottom:4px;">UNC Chapel Hill</h3>
+              <p style="font-size:0.9rem;color:#6B7B8D;">Kenan-Flagler Business School</p>
+            </div>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:#C5A55A;background:rgba(197,165,90,0.1);padding:4px 10px;border-radius:3px;white-space:nowrap;">May 2028</span>
+          </div>
+          <div class="gold-rule" style="margin-bottom:20px;"></div>
+          <p style="font-size:0.9rem;font-weight:600;color:#1B2A4A;margin-bottom:16px;">B.S. Business Administration &amp; Economics<br/><span style="font-weight:400;color:#6B7B8D;">Minor: Philosophy, Politics &amp; Economics</span></p>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C5A55A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20,6 9,17 4,12"/></svg>
+              <span style="font-size:0.875rem;color:#2D2D2D;">GPA: 3.479 · Dean's List Fall 2024, Fall 2025</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C5A55A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20,6 9,17 4,12"/></svg>
+              <span style="font-size:0.875rem;color:#2D2D2D;">Buckley Student Scholar</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C5A55A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20,6 9,17 4,12"/></svg>
+              <span style="font-size:0.875rem;color:#2D2D2D;">Bloomberg Market Concepts · Management Consulting (Emory)</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C5A55A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20,6 9,17 4,12"/></svg>
+              <span style="font-size:0.875rem;color:#2D2D2D;">Consulting Club · Real Estate Club · Alpha Phi Omega</span>
+            </div>
+          </div>
+          <div style="margin-top:20px;padding-top:20px;border-top:1px solid rgba(27,42,74,0.07);">
+            <p style="font-size:0.78rem;color:#6B7B8D;letter-spacing:0.03em;font-weight:500;margin-bottom:8px;text-transform:uppercase;">Coursework</p>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;">
+              <span style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;background:#F8F7F4;color:#1B2A4A;padding:4px 10px;border-radius:3px;border:1px solid rgba(27,42,74,0.1);">Econometrics I &amp; II</span>
+              <span style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;background:#F8F7F4;color:#1B2A4A;padding:4px 10px;border-radius:3px;border:1px solid rgba(27,42,74,0.1);">Corporate Finance</span>
+              <span style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;background:#F8F7F4;color:#1B2A4A;padding:4px 10px;border-radius:3px;border:1px solid rgba(27,42,74,0.1);">Financial Statement Analysis</span>
+              <span style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;background:#F8F7F4;color:#1B2A4A;padding:4px 10px;border-radius:3px;border:1px solid rgba(27,42,74,0.1);">Multivariable Calculus</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="gold-rule" style="max-width:1100px;margin:0 auto;opacity:0.2;"></div>
+
+  <!-- ═══════════════════════════════════════════
+       EXPERIENCE
+  ════════════════════════════════════════════════ -->
+  <section id="experience" style="padding:100px 24px;max-width:1100px;margin:0 auto;">
+    <div class="fade-up" style="margin-bottom:56px;">
+      <p style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:#C5A55A;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:12px;">Experience</p>
+      <h2 class="section-heading">Where I've <span>delivered</span> results.</h2>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:24px;">
+
+      <!-- Fairview -->
+      <div class="card fade-up" style="padding:36px 40px;">
+        <div style="display:grid;grid-template-columns:1fr auto;gap:24px;align-items:start;margin-bottom:20px;">
+          <div>
+            <h3 style="font-size:1.1rem;font-weight:700;color:#1B2A4A;letter-spacing:-0.02em;">Volunteer Consultant &amp; Project Manager</h3>
+            <p style="font-size:0.9rem;color:#3A7D7B;font-weight:600;margin-top:2px;">Fairview Community Garden — Expansion Project</p>
+            <p style="font-size:0.8rem;color:#6B7B8D;margin-top:2px;">Chapel Hill, NC</p>
+          </div>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:#6B7B8D;white-space:nowrap;margin-top:2px;">Aug 2025 – Present</span>
+        </div>
+        <div class="gold-rule" style="margin-bottom:20px;"></div>
+        <ul style="display:flex;flex-direction:column;gap:10px;">
+          <li style="display:flex;gap:12px;align-items:flex-start;">
+            <div class="timeline-dot" style="margin-top:5px;"></div>
+            <span style="font-size:0.9rem;line-height:1.65;color:#2D2D2D;">Conducted stakeholder needs assessment to define project scope, deliverables, and success criteria for garden expansion initiative.</span>
+          </li>
+          <li style="display:flex;gap:12px;align-items:flex-start;">
+            <div class="timeline-dot" style="margin-top:5px;"></div>
+            <span style="font-size:0.9rem;line-height:1.65;color:#2D2D2D;">Developed business case including site drawings, bill of quantities, and cost-benefit analysis to justify capex to decision-makers.</span>
+          </li>
+          <li style="display:flex;gap:12px;align-items:flex-start;">
+            <div class="timeline-dot" style="margin-top:5px;"></div>
+            <span style="font-size:0.9rem;line-height:1.65;color:#2D2D2D;">Built project budget and launched capital fundraising campaign, managing donor outreach and progress reporting.</span>
+          </li>
+          <li style="display:flex;gap:12px;align-items:flex-start;">
+            <div class="timeline-dot" style="margin-top:5px;"></div>
+            <span style="font-size:0.9rem;line-height:1.65;color:#2D2D2D;">Led cross-functional coordination of <strong>10+ volunteers</strong> across design, procurement, and construction workstreams.</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Empowered Legal -->
+      <div class="card fade-up" style="padding:36px 40px;">
+        <div style="display:grid;grid-template-columns:1fr auto;gap:24px;align-items:start;margin-bottom:20px;">
+          <div>
+            <h3 style="font-size:1.1rem;font-weight:700;color:#1B2A4A;letter-spacing:-0.02em;">Fundraising Chair</h3>
+            <p style="font-size:0.9rem;color:#3A7D7B;font-weight:600;margin-top:2px;">Empowered Legal Consulting Club — UNC Chapel Hill</p>
+          </div>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:#6B7B8D;white-space:nowrap;margin-top:2px;">Oct 2024 – Dec 2025</span>
+        </div>
+        <div class="gold-rule" style="margin-bottom:20px;"></div>
+        <ul style="display:flex;flex-direction:column;gap:10px;">
+          <li style="display:flex;gap:12px;align-items:flex-start;">
+            <div class="timeline-dot" style="margin-top:5px;"></div>
+            <span style="font-size:0.9rem;line-height:1.65;color:#2D2D2D;">Raised <strong>$2,000+</strong> in the club's inaugural year, establishing the organization's financial foundation.</span>
+          </li>
+          <li style="display:flex;gap:12px;align-items:flex-start;">
+            <div class="timeline-dot" style="margin-top:5px;"></div>
+            <span style="font-size:0.9rem;line-height:1.65;color:#2D2D2D;">Managed cross-functional collaboration between president, advertising, and accounting leadership to align initiatives with objectives.</span>
+          </li>
+          <li style="display:flex;gap:12px;align-items:flex-start;">
+            <div class="timeline-dot" style="margin-top:5px;"></div>
+            <span style="font-size:0.9rem;line-height:1.65;color:#2D2D2D;">Tracked event ROI and attendance metrics to iterate on formats and improve fundraising efficiency.</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Hodges & Coxe -->
+      <div class="card fade-up" style="padding:36px 40px;">
+        <div style="display:grid;grid-template-columns:1fr auto;gap:24px;align-items:start;margin-bottom:20px;">
+          <div>
+            <h3 style="font-size:1.1rem;font-weight:700;color:#1B2A4A;letter-spacing:-0.02em;">Legal Assistant</h3>
+            <p style="font-size:0.9rem;color:#3A7D7B;font-weight:600;margin-top:2px;">Hodges &amp; Coxe LLP</p>
+            <p style="font-size:0.8rem;color:#6B7B8D;margin-top:2px;">Wilmington, NC</p>
+          </div>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:#6B7B8D;white-space:nowrap;margin-top:2px;">Aug 2023 – Jan 2024</span>
+        </div>
+        <div class="gold-rule" style="margin-bottom:20px;"></div>
+        <ul style="display:flex;flex-direction:column;gap:10px;">
+          <li style="display:flex;gap:12px;align-items:flex-start;">
+            <div class="timeline-dot" style="margin-top:5px;"></div>
+            <span style="font-size:0.9rem;line-height:1.65;color:#2D2D2D;">Conducted research and analysis across <strong>15+ active matters</strong>, synthesizing case data and financial documentation into structured deliverables.</span>
+          </li>
+          <li style="display:flex;gap:12px;align-items:flex-start;">
+            <div class="timeline-dot" style="margin-top:5px;"></div>
+            <span style="font-size:0.9rem;line-height:1.65;color:#2D2D2D;">Managed time-sensitive filings across multiple courthouses, maintaining a <strong>zero-miss deadline record</strong> through systematic process management.</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Memory Lane -->
+      <div class="card fade-up" style="padding:36px 40px;">
+        <div style="display:grid;grid-template-columns:1fr auto;gap:24px;align-items:start;margin-bottom:20px;">
+          <div>
+            <h3 style="font-size:1.1rem;font-weight:700;color:#1B2A4A;letter-spacing:-0.02em;">Customer Service &amp; Operations Support</h3>
+            <p style="font-size:0.9rem;color:#3A7D7B;font-weight:600;margin-top:2px;">Memory Lane Comics</p>
+            <p style="font-size:0.8rem;color:#6B7B8D;margin-top:2px;">Wilmington, NC</p>
+          </div>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:#6B7B8D;white-space:nowrap;margin-top:2px;">Jul 2021 – Jul 2024</span>
+        </div>
+        <div class="gold-rule" style="margin-bottom:20px;"></div>
+        <ul style="display:flex;flex-direction:column;gap:10px;">
+          <li style="display:flex;gap:12px;align-items:flex-start;">
+            <div class="timeline-dot" style="margin-top:5px;"></div>
+            <span style="font-size:0.9rem;line-height:1.65;color:#2D2D2D;">Supported strategic expansion to second storefront, contributing to <strong>14% YoY revenue growth</strong> (2021–22) and 4% growth (2022–23).</span>
+          </li>
+          <li style="display:flex;gap:12px;align-items:flex-start;">
+            <div class="timeline-dot" style="margin-top:5px;"></div>
+            <span style="font-size:0.9rem;line-height:1.65;color:#2D2D2D;">Conducted market analysis of sales patterns and demand trends to inform purchasing and merchandising strategy, improving stock turnover.</span>
+          </li>
+          <li style="display:flex;gap:12px;align-items:flex-start;">
+            <div class="timeline-dot" style="margin-top:5px;"></div>
+            <span style="font-size:0.9rem;line-height:1.65;color:#2D2D2D;">Executed process improvements for inventory management and developed social media strategy to increase product visibility.</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- NHCS -->
+      <div class="card fade-up" style="padding:36px 40px;border-left:3px solid #C5A55A;">
+        <div style="display:grid;grid-template-columns:1fr auto;gap:24px;align-items:start;margin-bottom:20px;">
+          <div>
+            <h3 style="font-size:1.1rem;font-weight:700;color:#1B2A4A;letter-spacing:-0.02em;">Student Representative</h3>
+            <p style="font-size:0.9rem;color:#3A7D7B;font-weight:600;margin-top:2px;">New Hanover County Schools Calendar Committee</p>
+          </div>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:#6B7B8D;white-space:nowrap;margin-top:2px;">Aug 2022 – Aug 2023</span>
+        </div>
+        <div class="gold-rule" style="margin-bottom:20px;"></div>
+        <ul style="display:flex;flex-direction:column;gap:10px;">
+          <li style="display:flex;gap:12px;align-items:flex-start;">
+            <div class="timeline-dot" style="margin-top:5px;"></div>
+            <span style="font-size:0.9rem;line-height:1.65;color:#2D2D2D;">Selected to advise school board on calendar policy changes; gathered stakeholder input and presented data-driven recommendations to board members.</span>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="gold-rule" style="max-width:1100px;margin:0 auto;opacity:0.2;"></div>
+
+  <!-- ═══════════════════════════════════════════
+       SKILLS
+  ════════════════════════════════════════════════ -->
+  <section id="skills" style="padding:100px 24px;max-width:1100px;margin:0 auto;">
+    <div class="fade-up" style="margin-bottom:56px;">
+      <p style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:#C5A55A;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:12px;">Skills</p>
+      <h2 class="section-heading">The tools I <span>work with.</span></h2>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;" class="fade-up">
+
+      <!-- Analytics -->
+      <div class="card" style="padding:32px;">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
+          <div style="width:38px;height:38px;border-radius:6px;background:rgba(58,125,123,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3A7D7B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          </div>
+          <h3 style="font-size:0.95rem;font-weight:700;color:#1B2A4A;letter-spacing:-0.01em;">Analytics &amp; Programming</h3>
+        </div>
+        <div class="gold-rule" style="margin-bottom:20px;"></div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;">
+          <span class="skill-tag" style="background:rgba(58,125,123,0.08);color:#3A7D7B;border:1px solid rgba(58,125,123,0.2);">R</span>
+          <span class="skill-tag" style="background:rgba(58,125,123,0.08);color:#3A7D7B;border:1px solid rgba(58,125,123,0.2);">STATA</span>
+          <span class="skill-tag" style="background:rgba(58,125,123,0.08);color:#3A7D7B;border:1px solid rgba(58,125,123,0.2);">Tableau</span>
+        </div>
+        <div style="margin-top:16px;display:flex;flex-direction:column;gap:6px;">
+          <p style="font-size:0.8rem;color:#6B7B8D;line-height:1.5;">Regression modeling, causal inference, panel data analysis, hypothesis testing, KPI dashboards</p>
+        </div>
+      </div>
+
+      <!-- Financial Modeling -->
+      <div class="card" style="padding:32px;">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
+          <div style="width:38px;height:38px;border-radius:6px;background:rgba(197,165,90,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C5A55A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          </div>
+          <h3 style="font-size:0.95rem;font-weight:700;color:#1B2A4A;letter-spacing:-0.01em;">Financial Modeling</h3>
+        </div>
+        <div class="gold-rule" style="margin-bottom:20px;"></div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;">
+          <span class="skill-tag" style="background:rgba(197,165,90,0.08);color:#C5A55A;border:1px solid rgba(197,165,90,0.25);">Excel (Advanced)</span>
+          <span class="skill-tag" style="background:rgba(197,165,90,0.08);color:#C5A55A;border:1px solid rgba(197,165,90,0.25);">Bloomberg</span>
+        </div>
+        <div style="margin-top:16px;display:flex;flex-direction:column;gap:6px;">
+          <p style="font-size:0.8rem;color:#6B7B8D;line-height:1.5;">DCF valuation, integrated financial statements, sensitivity analysis, cost of capital, forecasting, pivot tables</p>
+        </div>
+      </div>
+
+      <!-- Consulting -->
+      <div class="card" style="padding:32px;">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
+          <div style="width:38px;height:38px;border-radius:6px;background:rgba(27,42,74,0.08);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1B2A4A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <h3 style="font-size:0.95rem;font-weight:700;color:#1B2A4A;letter-spacing:-0.01em;">Consulting &amp; Business</h3>
+        </div>
+        <div class="gold-rule" style="margin-bottom:20px;"></div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;">
+          <span class="skill-tag" style="background:rgba(27,42,74,0.06);color:#1B2A4A;border:1px solid rgba(27,42,74,0.15);">Strategic Analysis</span>
+          <span class="skill-tag" style="background:rgba(27,42,74,0.06);color:#1B2A4A;border:1px solid rgba(27,42,74,0.15);">Project Management</span>
+          <span class="skill-tag" style="background:rgba(27,42,74,0.06);color:#1B2A4A;border:1px solid rgba(27,42,74,0.15);">Stakeholder Mgmt</span>
+          <span class="skill-tag" style="background:rgba(27,42,74,0.06);color:#1B2A4A;border:1px solid rgba(27,42,74,0.15);">Process Improvement</span>
+          <span class="skill-tag" style="background:rgba(27,42,74,0.06);color:#1B2A4A;border:1px solid rgba(27,42,74,0.15);">Market Analysis</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Certifications row -->
+    <div class="fade-up" style="margin-top:32px;background:#fff;border-radius:8px;padding:28px 36px;box-shadow:0 1px 2px rgba(27,42,74,0.04),0 4px 12px rgba(27,42,74,0.07);display:flex;align-items:center;gap:32px;flex-wrap:wrap;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C5A55A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
+        <span style="font-size:0.875rem;font-weight:600;color:#1B2A4A;">Bloomberg Market Concepts (BMC)</span>
+      </div>
+      <div style="width:1px;height:20px;background:rgba(27,42,74,0.1);"></div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C5A55A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
+        <span style="font-size:0.875rem;font-weight:600;color:#1B2A4A;">Management Consulting Certification — Emory University</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="gold-rule" style="max-width:1100px;margin:0 auto;opacity:0.2;"></div>
+
+  <!-- ═══════════════════════════════════════════
+       CONTACT
+  ════════════════════════════════════════════════ -->
+  <section id="contact" style="padding:100px 24px;">
+    <div style="max-width:640px;margin:0 auto;text-align:center;" class="fade-up">
+      <p style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:#C5A55A;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:12px;">Contact</p>
+      <h2 class="section-heading" style="margin-bottom:16px;">Let's <span>connect.</span></h2>
+      <p style="font-size:1rem;line-height:1.75;color:#6B7B8D;margin-bottom:48px;">Interested in working together or just want to chat? I'm always open to new opportunities and conversations.</p>
+      <div style="display:flex;flex-direction:column;gap:12px;max-width:400px;margin:0 auto;">
+        <a href="mailto:Coegan@business.unc.edu" class="contact-link">
+          <div style="width:36px;height:36px;border-radius:6px;background:rgba(197,165,90,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C5A55A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          </div>
+          <div style="text-align:left;">
+            <div style="font-size:0.75rem;color:#6B7B8D;letter-spacing:0.04em;text-transform:uppercase;">Email</div>
+            <div style="font-size:0.9rem;color:#1B2A4A;font-weight:600;">Coegan@business.unc.edu</div>
+          </div>
+          <svg style="margin-left:auto;color:#6B7B8D;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12,5 19,12 12,19"/></svg>
+        </a>
+        <a href="https://linkedin.com/in/colin-egan-aa1a31292" target="_blank" rel="noopener noreferrer" class="contact-link">
+          <div style="width:36px;height:36px;border-radius:6px;background:rgba(58,125,123,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3A7D7B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+          </div>
+          <div style="text-align:left;">
+            <div style="font-size:0.75rem;color:#6B7B8D;letter-spacing:0.04em;text-transform:uppercase;">LinkedIn</div>
+            <div style="font-size:0.9rem;color:#1B2A4A;font-weight:600;">colin-egan-aa1a31292</div>
+          </div>
+          <svg style="margin-left:auto;color:#6B7B8D;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12,5 19,12 12,19"/></svg>
+        </a>
+        <a href="tel:7048407380" class="contact-link">
+          <div style="width:36px;height:36px;border-radius:6px;background:rgba(27,42,74,0.08);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1B2A4A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.37a16 16 0 0 0 6.29 6.29l.95-.95a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          </div>
+          <div style="text-align:left;">
+            <div style="font-size:0.75rem;color:#6B7B8D;letter-spacing:0.04em;text-transform:uppercase;">Phone</div>
+            <div style="font-size:0.9rem;color:#1B2A4A;font-weight:600;">(704) 840-7380</div>
+          </div>
+          <svg style="margin-left:auto;color:#6B7B8D;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12,5 19,12 12,19"/></svg>
+        </a>
+        <a href="Brand_assets/Colin Egan Resume. APR 1.pdf" target="_blank" class="btn-primary" style="justify-content:center;margin-top:8px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          Download Full Resume (PDF)
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+       FOOTER
+  ════════════════════════════════════════════════ -->
+  <footer style="background:#1B2A4A;padding:40px 24px;">
+    <div style="max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <img src="Brand_assets/Colin Egan Personal Logo.png" alt="CTE" style="height:32px;filter:brightness(0) invert(1);opacity:0.7;" />
+        <span style="font-size:0.8rem;color:rgba(248,247,244,0.35);">© 2026 Colin T. Egan</span>
+      </div>
+      <p style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:rgba(248,247,244,0.3);letter-spacing:0.08em;">Quantitative Rigor. Strategic Clarity.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Scroll-triggered fade-up
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+    // Nav shadow on scroll
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 10) {
+        nav.style.boxShadow = '0 2px 20px rgba(27,42,74,0.08)';
+      } else {
+        nav.style.boxShadow = 'none';
+      }
+    }, { passive: true });
+  </script>
+</body>
+</html>
