@@ -74,13 +74,20 @@
     /* Hero gradient */
     .hero-bg {
       background-color: #1B2A4A;
-      background-image:
-        radial-gradient(ellipse 70% 60% at 80% 20%, rgba(197,165,90,0.12) 0%, transparent 60%),
-        radial-gradient(ellipse 50% 80% at 10% 80%, rgba(58,125,123,0.1) 0%, transparent 55%),
-        radial-gradient(ellipse 40% 40% at 50% 50%, rgba(27,42,74,0.8) 0%, transparent 100%);
       position: relative;
       overflow: hidden;
     }
+
+    /* Aurora canvas */
+    #aurora-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
     .hero-bg::after {
       content: '';
       position: absolute;
@@ -271,6 +278,7 @@
        HERO
   ════════════════════════════════════════════════ -->
   <section id="hero" class="hero-bg" style="padding-top:64px;min-height:100vh;display:flex;align-items:center;position:relative;">
+    <canvas id="aurora-canvas"></canvas>
     <div style="max-width:1100px;margin:0 auto;padding:80px 24px;position:relative;z-index:2;width:100%;">
       <div style="display:grid;grid-template-columns:1fr auto;gap:64px;align-items:center;">
 
@@ -304,32 +312,45 @@
               Download Resume
             </a>
           </div>
+
+          <!-- Stats row -->
+          <div style="display:flex;gap:0;margin-top:36px;border-top:1px solid rgba(197,165,90,0.2);padding-top:28px;">
+            <div style="flex:1;padding-right:24px;">
+              <div class="stat-number" style="font-size:1.75rem;">3.479</div>
+              <div style="font-size:0.72rem;color:rgba(248,247,244,0.45);margin-top:4px;letter-spacing:0.06em;text-transform:uppercase;">GPA</div>
+            </div>
+            <div style="width:1px;background:rgba(197,165,90,0.2);margin:0 24px;"></div>
+            <div style="flex:1;padding:0 24px;">
+              <div class="stat-number" style="font-size:1.75rem;">2×</div>
+              <div style="font-size:0.72rem;color:rgba(248,247,244,0.45);margin-top:4px;letter-spacing:0.06em;text-transform:uppercase;">Dean's List</div>
+            </div>
+            <div style="width:1px;background:rgba(197,165,90,0.2);margin:0 24px;"></div>
+            <div style="flex:1;padding-left:24px;">
+              <div class="stat-number" style="font-size:1.75rem;">14%</div>
+              <div style="font-size:0.72rem;color:rgba(248,247,244,0.45);margin-top:4px;letter-spacing:0.06em;text-transform:uppercase;">YoY Revenue Growth Led</div>
+            </div>
+          </div>
         </div>
 
-        <!-- Right: stat card -->
-        <div style="display:flex;flex-direction:column;gap:16px;">
-          <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(197,165,90,0.2);border-radius:8px;padding:28px 32px;min-width:200px;">
-            <div class="stat-number">3.479</div>
-            <div style="font-size:0.8rem;color:rgba(248,247,244,0.5);margin-top:6px;letter-spacing:0.04em;text-transform:uppercase;">GPA</div>
-          </div>
-          <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(197,165,90,0.2);border-radius:8px;padding:28px 32px;">
-            <div class="stat-number">2×</div>
-            <div style="font-size:0.8rem;color:rgba(248,247,244,0.5);margin-top:6px;letter-spacing:0.04em;text-transform:uppercase;">Dean's List</div>
-          </div>
-          <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(197,165,90,0.2);border-radius:8px;padding:28px 32px;">
-            <div class="stat-number">14%</div>
-            <div style="font-size:0.8rem;color:rgba(248,247,244,0.5);margin-top:6px;letter-spacing:0.04em;text-transform:uppercase;">YoY Revenue Growth Led</div>
+        <!-- Right: headshot -->
+        <div style="position:relative;flex-shrink:0;">
+          <!-- Decorative gold ring offset -->
+          <div style="position:absolute;inset:-8px;border-radius:16px;border:1.5px solid rgba(197,165,90,0.35);pointer-events:none;z-index:0;"></div>
+          <!-- Subtle corner accent -->
+          <div style="position:absolute;top:-16px;right:-16px;width:48px;height:48px;border-top:2px solid #C5A55A;border-right:2px solid #C5A55A;border-radius:0 6px 0 0;z-index:3;opacity:0.7;"></div>
+          <div style="position:absolute;bottom:-16px;left:-16px;width:48px;height:48px;border-bottom:2px solid #C5A55A;border-left:2px solid #C5A55A;border-radius:0 0 0 6px;z-index:3;opacity:0.7;"></div>
+          <!-- Photo -->
+          <div style="position:relative;z-index:1;border-radius:12px;overflow:hidden;width:280px;
+                      box-shadow:0 2px 8px rgba(27,42,74,0.2),0 12px 40px rgba(27,42,74,0.35),0 32px 64px rgba(27,42,74,0.25);">
+            <img src="Brand_assets/headshot.jpg" alt="Colin Egan" style="width:100%;height:380px;object-fit:cover;object-position:center top;display:block;" />
+            <!-- Subtle gradient overlay at bottom -->
+            <div style="position:absolute;inset:0;background:linear-gradient(to top, rgba(27,42,74,0.45) 0%, transparent 50%);pointer-events:none;"></div>
           </div>
         </div>
 
       </div>
     </div>
 
-    <!-- Scroll cue -->
-    <div style="position:absolute;bottom:36px;left:50%;transform:translateX(-50%);z-index:2;display:flex;flex-direction:column;align-items:center;gap:8px;opacity:0.4;">
-      <span style="font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:#F8F7F4;">Scroll</span>
-      <svg width="16" height="20" viewBox="0 0 16 20" fill="none"><rect x="6" y="0" width="4" height="10" rx="2" fill="#F8F7F4"/><path d="M2 14l6 6 6-6" stroke="#F8F7F4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
-    </div>
   </section>
 
   <!-- ═══════════════════════════════════════════
@@ -685,6 +706,94 @@
   </footer>
 
   <script>
+    // ── Aurora canvas background ──────────────────────────────────────────
+    (function () {
+      const canvas = document.getElementById('aurora-canvas');
+      const ctx    = canvas.getContext('2d');
+      const hero   = canvas.parentElement;
+      let time  = 0;
+      const mouse = { x: null, y: null };
+
+      function resize() {
+        canvas.width  = window.innerWidth;
+        canvas.height = hero.offsetHeight || window.innerHeight;
+      }
+      resize();
+      window.addEventListener('resize', resize);
+
+      // Mouse tracking — relative to canvas position
+      hero.addEventListener('mousemove', (e) => {
+        const r  = canvas.getBoundingClientRect();
+        mouse.x  = e.clientX - r.left;
+        mouse.y  = e.clientY - r.top;
+      });
+      hero.addEventListener('mouseleave', () => { mouse.x = null; mouse.y = null; });
+
+      // Brand palette
+      const colors = [
+        { r: 197, g: 165, b:  90 }, // gold    #C5A55A
+        { r:  58, g: 125, b: 123 }, // teal    #3A7D7B
+        { r: 180, g: 130, b:  50 }, // warm gold
+        { r:  45, g:  80, b: 130 }, // lifted navy
+      ];
+
+      function Orb() {
+        this.reset = function () {
+          this.x      = Math.random() * canvas.width;
+          this.y      = Math.random() * canvas.height;
+          this.radius = Math.random() * 380 + 150;
+          this.color  = colors[Math.floor(Math.random() * colors.length)];
+          this.vx     = (Math.random() - 0.5) * 1.2;
+          this.vy     = (Math.random() - 0.5) * 1.2;
+        };
+        this.reset();
+
+        this.draw = function () {
+          const g = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.radius);
+          g.addColorStop(0, `rgba(${this.color.r},${this.color.g},${this.color.b},0.3)`);
+          g.addColorStop(1, `rgba(${this.color.r},${this.color.g},${this.color.b},0)`);
+          ctx.fillStyle = g;
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+          ctx.fill();
+        };
+
+        this.update = function () {
+          // Drift
+          this.x += this.vx + Math.sin(time * 0.003 + this.radius) * 0.7;
+          this.y += this.vy + Math.cos(time * 0.002 + this.radius) * 0.7;
+
+          // Mouse attraction — pull orbs gently toward cursor
+          if (mouse.x !== null) {
+            const dx   = mouse.x - this.x;
+            const dy   = mouse.y - this.y;
+            const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+            const pull = Math.min(250 / dist, 1.8);
+            this.vx += (dx / dist) * pull * 0.018;
+            this.vy += (dy / dist) * pull * 0.018;
+          }
+
+          // Speed cap
+          const spd = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
+          if (spd > 2.8) { this.vx = (this.vx / spd) * 2.8; this.vy = (this.vy / spd) * 2.8; }
+
+          // Reset if drifted off-screen
+          if (this.x < -this.radius || this.x > canvas.width  + this.radius ||
+              this.y < -this.radius || this.y > canvas.height + this.radius) { this.reset(); }
+        };
+      }
+
+      const orbs = Array.from({ length: 10 }, () => new Orb());
+
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        time++;
+        orbs.forEach(o => { o.update(); o.draw(); });
+        requestAnimationFrame(animate);
+      }
+      animate();
+    })();
+
     // Scroll-triggered fade-up
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
