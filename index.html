@@ -6,7 +6,7 @@
   <title>Colin T. Egan — Portfolio</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -243,6 +243,55 @@
     }
     .contact-link:focus-visible { outline: 2px solid #C5A55A; outline-offset: 3px; }
 
+    /* Hamburger */
+    .nav-hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+    }
+    .nav-hamburger span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: #1B2A4A;
+      border-radius: 2px;
+      transition: transform 0.25s ease, opacity 0.25s ease;
+    }
+    .nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .nav-hamburger.open span:nth-child(2) { opacity: 0; }
+    .nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* Mobile menu drawer */
+    #mobile-menu {
+      display: none;
+      position: fixed;
+      top: 64px;
+      left: 0;
+      right: 0;
+      background: rgba(248,247,244,0.97);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(27,42,74,0.08);
+      padding: 16px 24px 24px;
+      z-index: 49;
+      flex-direction: column;
+      gap: 4px;
+    }
+    #mobile-menu.open { display: flex; }
+    #mobile-menu a {
+      font-size: 1rem;
+      font-weight: 500;
+      color: #1B2A4A;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(27,42,74,0.06);
+      text-decoration: none;
+      letter-spacing: 0.03em;
+    }
+    #mobile-menu a:last-child { border-bottom: none; }
+
     /* Scroll fade-in */
     .fade-up {
       opacity: 0;
@@ -252,6 +301,46 @@
     .fade-up.visible {
       opacity: 1;
       transform: translateY(0);
+    }
+    /* ── Mobile ─────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .nav-hamburger { display: flex; }
+      .nav-desktop-links { display: none !important; }
+
+      /* Hero: stack photo above text */
+      .hero-grid {
+        grid-template-columns: 1fr !important;
+        gap: 32px !important;
+      }
+      .hero-grid > div:last-child { order: -1; }
+      .hero-photo { width: 180px !important; height: 240px !important; margin: 0 auto; }
+      .hero-photo-wrap { display: flex; justify-content: center; }
+
+      /* Stats row: tighter */
+      .hero-stats { margin-top: 24px !important; padding-top: 20px !important; }
+      .hero-stats .stat-number { font-size: 1.4rem !important; }
+
+      /* Section padding */
+      #about, #experience, #skills { padding: 64px 16px !important; }
+      #contact { padding: 64px 16px !important; }
+
+      /* About: single column */
+      .about-grid { grid-template-columns: 1fr !important; gap: 40px !important; }
+
+      /* Experience cards: tighter */
+      .exp-card { padding: 24px 20px !important; }
+      .exp-header { grid-template-columns: 1fr !important; gap: 4px !important; }
+      .exp-date { white-space: normal !important; font-size: 0.72rem !important; margin-top: 6px !important; }
+
+      /* Skills: single column */
+      .skills-grid { grid-template-columns: 1fr !important; }
+
+      /* Certs: stack */
+      .certs-row { flex-direction: column !important; gap: 16px !important; }
+      .cert-divider { display: none !important; }
+
+      /* Section headings */
+      .section-heading { font-size: 1.5rem !important; }
     }
   </style>
 </head>
@@ -265,14 +354,23 @@
       <a href="#hero" style="display:flex;align-items:center;gap:12px;text-decoration:none;">
         <img src="Brand_assets/Colin Egan Personal Logo.png" alt="CTE Logo" style="height:36px;width:auto;" />
       </a>
-      <div style="display:flex;gap:32px;align-items:center;">
+      <div class="nav-desktop-links" style="display:flex;gap:32px;align-items:center;">
         <a href="#about" class="nav-link">About</a>
         <a href="#experience" class="nav-link">Experience</a>
         <a href="#skills" class="nav-link">Skills</a>
         <a href="#contact" class="nav-link">Contact</a>
       </div>
+      <button class="nav-hamburger" id="nav-toggle" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
     </div>
   </nav>
+  <div id="mobile-menu">
+    <a href="#about"      onclick="closeMobileMenu()">About</a>
+    <a href="#experience" onclick="closeMobileMenu()">Experience</a>
+    <a href="#skills"     onclick="closeMobileMenu()">Skills</a>
+    <a href="#contact"    onclick="closeMobileMenu()">Contact</a>
+  </div>
 
   <!-- ═══════════════════════════════════════════
        HERO
@@ -280,7 +378,7 @@
   <section id="hero" class="hero-bg" style="padding-top:64px;min-height:100vh;display:flex;align-items:center;position:relative;">
     <canvas id="aurora-canvas"></canvas>
     <div style="max-width:1100px;margin:0 auto;padding:80px 24px;position:relative;z-index:2;width:100%;">
-      <div style="display:grid;grid-template-columns:1fr auto;gap:64px;align-items:center;">
+      <div class="hero-grid" style="display:grid;grid-template-columns:1fr auto;gap:64px;align-items:center;">
 
         <!-- Left: text -->
         <div>
@@ -289,10 +387,7 @@
             <span style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:500;color:#C5A55A;letter-spacing:0.1em;text-transform:uppercase;">Available for Internships · Summer 2026</span>
           </div>
 
-          <h1 style="font-size:clamp(2.8rem,6vw,4.5rem);font-weight:700;letter-spacing:-0.04em;color:#F8F7F4;line-height:1.05;margin-bottom:16px;">
-            Colin T.<br/>
-            <span style="color:#C5A55A;">Egan</span>
-          </h1>
+          <h1 style="line-height:1.05;margin-bottom:20px;font-family:'Inter',sans-serif;font-size:clamp(2.4rem,5.5vw,4.5rem);font-weight:700;letter-spacing:-0.03em;color:#F8F7F4;white-space:nowrap;">Colin T. Egan</h1>
 
           <p style="font-size:1.2rem;font-weight:500;color:rgba(248,247,244,0.7);letter-spacing:0.01em;margin-bottom:12px;">
             Business &amp; Economics — UNC Kenan-Flagler
@@ -314,7 +409,7 @@
           </div>
 
           <!-- Stats row -->
-          <div style="display:flex;gap:0;margin-top:36px;border-top:1px solid rgba(197,165,90,0.2);padding-top:28px;">
+          <div class="hero-stats" style="display:flex;gap:0;margin-top:36px;border-top:1px solid rgba(197,165,90,0.2);padding-top:28px;">
             <div style="flex:1;padding-right:24px;">
               <div class="stat-number" style="font-size:1.75rem;">3.479</div>
               <div style="font-size:0.72rem;color:rgba(248,247,244,0.45);margin-top:4px;letter-spacing:0.06em;text-transform:uppercase;">GPA</div>
@@ -333,14 +428,14 @@
         </div>
 
         <!-- Right: headshot -->
-        <div style="position:relative;flex-shrink:0;">
+        <div class="hero-photo-wrap" style="position:relative;flex-shrink:0;">
           <!-- Decorative gold ring offset -->
           <div style="position:absolute;inset:-8px;border-radius:16px;border:1.5px solid rgba(197,165,90,0.35);pointer-events:none;z-index:0;"></div>
           <!-- Subtle corner accent -->
           <div style="position:absolute;top:-16px;right:-16px;width:48px;height:48px;border-top:2px solid #C5A55A;border-right:2px solid #C5A55A;border-radius:0 6px 0 0;z-index:3;opacity:0.7;"></div>
           <div style="position:absolute;bottom:-16px;left:-16px;width:48px;height:48px;border-bottom:2px solid #C5A55A;border-left:2px solid #C5A55A;border-radius:0 0 0 6px;z-index:3;opacity:0.7;"></div>
           <!-- Photo -->
-          <div style="position:relative;z-index:1;border-radius:12px;overflow:hidden;width:280px;
+          <div class="hero-photo" style="position:relative;z-index:1;border-radius:12px;overflow:hidden;width:280px;
                       box-shadow:0 2px 8px rgba(27,42,74,0.2),0 12px 40px rgba(27,42,74,0.35),0 32px 64px rgba(27,42,74,0.25);">
             <img src="Brand_assets/headshot.jpg" alt="Colin Egan" style="width:100%;height:380px;object-fit:cover;object-position:center top;display:block;" />
             <!-- Subtle gradient overlay at bottom -->
@@ -357,7 +452,7 @@
        ABOUT / EDUCATION
   ════════════════════════════════════════════════ -->
   <section id="about" style="padding:100px 24px;max-width:1100px;margin:0 auto;">
-    <div class="fade-up" style="display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start;">
+    <div class="fade-up about-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start;">
 
       <!-- Left: bio -->
       <div>
@@ -432,14 +527,14 @@
     <div style="display:flex;flex-direction:column;gap:24px;">
 
       <!-- Fairview -->
-      <div class="card fade-up" style="padding:36px 40px;">
-        <div style="display:grid;grid-template-columns:1fr auto;gap:24px;align-items:start;margin-bottom:20px;">
+      <div class="card fade-up exp-card" style="padding:36px 40px;">
+        <div class="exp-header" style="display:grid;grid-template-columns:1fr auto;gap:24px;align-items:start;margin-bottom:20px;">
           <div>
             <h3 style="font-size:1.1rem;font-weight:700;color:#1B2A4A;letter-spacing:-0.02em;">Volunteer Consultant &amp; Project Manager</h3>
             <p style="font-size:0.9rem;color:#3A7D7B;font-weight:600;margin-top:2px;">Fairview Community Garden — Expansion Project</p>
             <p style="font-size:0.8rem;color:#6B7B8D;margin-top:2px;">Chapel Hill, NC</p>
           </div>
-          <span style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:#6B7B8D;white-space:nowrap;margin-top:2px;">Aug 2025 – Present</span>
+          <span class="exp-date" style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:#6B7B8D;white-space:nowrap;margin-top:2px;">Aug 2025 – Present</span>
         </div>
         <div class="gold-rule" style="margin-bottom:20px;"></div>
         <ul style="display:flex;flex-direction:column;gap:10px;">
@@ -463,13 +558,13 @@
       </div>
 
       <!-- Empowered Legal -->
-      <div class="card fade-up" style="padding:36px 40px;">
-        <div style="display:grid;grid-template-columns:1fr auto;gap:24px;align-items:start;margin-bottom:20px;">
+      <div class="card fade-up exp-card" style="padding:36px 40px;">
+        <div class="exp-header" style="display:grid;grid-template-columns:1fr auto;gap:24px;align-items:start;margin-bottom:20px;">
           <div>
             <h3 style="font-size:1.1rem;font-weight:700;color:#1B2A4A;letter-spacing:-0.02em;">Fundraising Chair</h3>
             <p style="font-size:0.9rem;color:#3A7D7B;font-weight:600;margin-top:2px;">Empowered Legal Consulting Club — UNC Chapel Hill</p>
           </div>
-          <span style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:#6B7B8D;white-space:nowrap;margin-top:2px;">Oct 2024 – Dec 2025</span>
+          <span class="exp-date" style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:#6B7B8D;white-space:nowrap;margin-top:2px;">Oct 2024 – Dec 2025</span>
         </div>
         <div class="gold-rule" style="margin-bottom:20px;"></div>
         <ul style="display:flex;flex-direction:column;gap:10px;">
@@ -489,14 +584,14 @@
       </div>
 
       <!-- Hodges & Coxe -->
-      <div class="card fade-up" style="padding:36px 40px;">
-        <div style="display:grid;grid-template-columns:1fr auto;gap:24px;align-items:start;margin-bottom:20px;">
+      <div class="card fade-up exp-card" style="padding:36px 40px;">
+        <div class="exp-header" style="display:grid;grid-template-columns:1fr auto;gap:24px;align-items:start;margin-bottom:20px;">
           <div>
             <h3 style="font-size:1.1rem;font-weight:700;color:#1B2A4A;letter-spacing:-0.02em;">Legal Assistant</h3>
             <p style="font-size:0.9rem;color:#3A7D7B;font-weight:600;margin-top:2px;">Hodges &amp; Coxe LLP</p>
             <p style="font-size:0.8rem;color:#6B7B8D;margin-top:2px;">Wilmington, NC</p>
           </div>
-          <span style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:#6B7B8D;white-space:nowrap;margin-top:2px;">Aug 2023 – Jan 2024</span>
+          <span class="exp-date" style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:#6B7B8D;white-space:nowrap;margin-top:2px;">Aug 2023 – Jan 2024</span>
         </div>
         <div class="gold-rule" style="margin-bottom:20px;"></div>
         <ul style="display:flex;flex-direction:column;gap:10px;">
@@ -512,14 +607,14 @@
       </div>
 
       <!-- Memory Lane -->
-      <div class="card fade-up" style="padding:36px 40px;">
-        <div style="display:grid;grid-template-columns:1fr auto;gap:24px;align-items:start;margin-bottom:20px;">
+      <div class="card fade-up exp-card" style="padding:36px 40px;">
+        <div class="exp-header" style="display:grid;grid-template-columns:1fr auto;gap:24px;align-items:start;margin-bottom:20px;">
           <div>
             <h3 style="font-size:1.1rem;font-weight:700;color:#1B2A4A;letter-spacing:-0.02em;">Customer Service &amp; Operations Support</h3>
             <p style="font-size:0.9rem;color:#3A7D7B;font-weight:600;margin-top:2px;">Memory Lane Comics</p>
             <p style="font-size:0.8rem;color:#6B7B8D;margin-top:2px;">Wilmington, NC</p>
           </div>
-          <span style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:#6B7B8D;white-space:nowrap;margin-top:2px;">Jul 2021 – Jul 2024</span>
+          <span class="exp-date" style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:#6B7B8D;white-space:nowrap;margin-top:2px;">Jul 2021 – Jul 2024</span>
         </div>
         <div class="gold-rule" style="margin-bottom:20px;"></div>
         <ul style="display:flex;flex-direction:column;gap:10px;">
@@ -540,12 +635,12 @@
 
       <!-- NHCS -->
       <div class="card fade-up" style="padding:36px 40px;border-left:3px solid #C5A55A;">
-        <div style="display:grid;grid-template-columns:1fr auto;gap:24px;align-items:start;margin-bottom:20px;">
+        <div class="exp-header" style="display:grid;grid-template-columns:1fr auto;gap:24px;align-items:start;margin-bottom:20px;">
           <div>
             <h3 style="font-size:1.1rem;font-weight:700;color:#1B2A4A;letter-spacing:-0.02em;">Student Representative</h3>
             <p style="font-size:0.9rem;color:#3A7D7B;font-weight:600;margin-top:2px;">New Hanover County Schools Calendar Committee</p>
           </div>
-          <span style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:#6B7B8D;white-space:nowrap;margin-top:2px;">Aug 2022 – Aug 2023</span>
+          <span class="exp-date" style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:#6B7B8D;white-space:nowrap;margin-top:2px;">Aug 2022 – Aug 2023</span>
         </div>
         <div class="gold-rule" style="margin-bottom:20px;"></div>
         <ul style="display:flex;flex-direction:column;gap:10px;">
@@ -570,7 +665,7 @@
       <h2 class="section-heading">The tools I <span>work with.</span></h2>
     </div>
 
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;" class="fade-up">
+    <div class="skills-grid fade-up" style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;">
 
       <!-- Analytics -->
       <div class="card" style="padding:32px;">
@@ -630,12 +725,12 @@
     </div>
 
     <!-- Certifications row -->
-    <div class="fade-up" style="margin-top:32px;background:#fff;border-radius:8px;padding:28px 36px;box-shadow:0 1px 2px rgba(27,42,74,0.04),0 4px 12px rgba(27,42,74,0.07);display:flex;align-items:center;gap:32px;flex-wrap:wrap;">
+    <div class="certs-row fade-up" style="margin-top:32px;background:#fff;border-radius:8px;padding:28px 36px;box-shadow:0 1px 2px rgba(27,42,74,0.04),0 4px 12px rgba(27,42,74,0.07);display:flex;align-items:center;gap:32px;flex-wrap:wrap;">
       <div style="display:flex;align-items:center;gap:10px;">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C5A55A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
         <span style="font-size:0.875rem;font-weight:600;color:#1B2A4A;">Bloomberg Market Concepts (BMC)</span>
       </div>
-      <div style="width:1px;height:20px;background:rgba(27,42,74,0.1);"></div>
+      <div class="cert-divider" style="width:1px;height:20px;background:rgba(27,42,74,0.1);"></div>
       <div style="display:flex;align-items:center;gap:10px;">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C5A55A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
         <span style="font-size:0.875rem;font-weight:600;color:#1B2A4A;">Management Consulting Certification — Emory University</span>
@@ -808,12 +903,20 @@
     // Nav shadow on scroll
     const nav = document.getElementById('nav');
     window.addEventListener('scroll', () => {
-      if (window.scrollY > 10) {
-        nav.style.boxShadow = '0 2px 20px rgba(27,42,74,0.08)';
-      } else {
-        nav.style.boxShadow = 'none';
-      }
+      nav.style.boxShadow = window.scrollY > 10 ? '0 2px 20px rgba(27,42,74,0.08)' : 'none';
     }, { passive: true });
+
+    // Hamburger menu
+    const toggle   = document.getElementById('nav-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+    toggle.addEventListener('click', () => {
+      const open = mobileMenu.classList.toggle('open');
+      toggle.classList.toggle('open', open);
+    });
+    function closeMobileMenu() {
+      mobileMenu.classList.remove('open');
+      toggle.classList.remove('open');
+    }
   </script>
 </body>
 </html>
